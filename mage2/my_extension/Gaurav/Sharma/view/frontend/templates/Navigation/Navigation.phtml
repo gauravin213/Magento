@@ -1,0 +1,107 @@
+
+<?php
+ 
+$data =  json_encode(array(
+    "name"=>"example",
+    "company"=>"Clagtech"
+));
+?>
+<script type="text/x-magento-init">
+    {
+        "*":{
+            "mycomponent":{
+                "wkdata":<?php echo $data ?>
+            }
+        }
+    }
+</script>
+
+<script type="text/javascript">
+	require(['jquery'],function($){
+
+    $(document).ready(function(){
+
+       $(".clagnav > ul > li > a").click(function(e){
+
+	    	//e.preventDefault();
+
+	    	 var target = $(this);
+
+	    	 var navid  = target.attr("id");
+
+	    	 localStorage.setItem("loc_id", navid);
+
+	    });
+
+       	loc_id = localStorage.getItem("loc_id");
+
+	    if (loc_id) {
+	    	
+	    	if (loc_id == "clagnav1" || loc_id == "clagnav2" || loc_id == "clagnav3") {
+
+	    		$("#"+loc_id).addClass("make_active");
+
+	    	}
+
+	    	//localStorage.setItem("loc_id", "");
+
+	    }
+
+
+
+    });
+
+});
+</script>
+
+
+<?php
+
+
+$om = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $om->get('Magento\Customer\Model\Session');
+if($customerSession->isLoggedIn()) { ?>
+
+<style type="text/css">
+	.clagnav > ul > li{
+    display: inline-block;
+    display: inline-block;
+    padding: 0px;
+    margin-left: 7px;
+    
+	}
+
+	.clagnav > ul > li > a{
+		color: #fff;
+	    background-color: gray;
+	    padding: 34px;
+	    cursor: pointer;
+	    text-decoration:none;
+	}
+
+	.clagnav{
+	background-color: #f0f0f0;
+    padding: 43px;
+    padding-bottom: 9px;
+	}
+
+	.make_active{
+
+		background-color: #526552 !important;
+
+	}
+</style>
+
+<div class="clagnav">
+	<ul>
+		<li><a id="clagnav1" href="<?php echo $block->getUrl('sharma/index/index');?>">Creat Post</a></li>
+
+		<li><a id="clagnav2" href="<?php echo $block->getUrl('clagmp/index/index');?>">Clagtech</a></li>
+
+		<li><a id="clagnav3" href="<?php echo $block->getUrl('clagmp/index/sellerregistration');?>">Seller A/c</a></li>
+	</ul>
+</div>
+
+
+   
+<?php } ?>

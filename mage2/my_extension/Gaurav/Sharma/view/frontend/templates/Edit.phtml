@@ -1,0 +1,26 @@
+<?php
+$data = $this->getCollection();
+?>
+
+<h1>Edit Post</h1>
+
+<form method="post" action="<?php echo $block->getUrl('sharma/index/editdata'); ?>">
+
+	<input type="hidden" name="demo" value="1">
+
+    <input type="hidden" name="id" value="<?php echo $data['id'];?>">
+
+    Name : 
+    <input type="text" name="name" value="<?php echo $data['name'];?>"><br><br>
+
+
+    Post Content : 
+    <input type="text" name="postcontent" value="<?php echo $data['post_content'];?>"><br><br>
+
+
+    Url Key : 
+	<input type="text" name="urlkey" value="<?php echo $data['url_key'];?>"><br><br>
+
+	<button>Save</button>
+	
+</form>

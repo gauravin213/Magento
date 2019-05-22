@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Pagseguro. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Backend/etc/menu.xsd">
+    <menu>
+        <add id="gaurav::base" title="Gaurav" module="Gaurav_Sharma" sortOrder="90" resource="Gaurav_Sharma::sample"/>
+
+
+        <add id="gaurav_sharma::sharma" title="Advertise" module="Gaurav_Sharma" sortOrder="10" parent="gaurav::base" action="gaurav_sharma/advertise/" resource="Gaurav_Sharma::advertise"/>
+
+        <add id="gaurav_sharma::sharmaslider" title="Advertise Test" module="Gaurav_Sharma" sortOrder="11" parent="gaurav::base" action="gaurav_sharma/advertise/" resource="Gaurav_Sharma::advertise"/>
+
+    </menu>
+</config>

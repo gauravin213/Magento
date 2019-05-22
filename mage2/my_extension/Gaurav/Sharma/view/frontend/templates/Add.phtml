@@ -1,0 +1,26 @@
+<?php
+//echo $data = $this->getHelloWorldTxt();
+
+//echo date("l jS \of F Y h:i:s A");
+
+echo date("Y-m-d h:i:s");
+
+?>
+
+<h1>Add Post</h1>
+<form method="post" action="<?php echo $block->getUrl('sharma/index/adddata'); ?>">
+
+    Name : 
+    <input type="text" name="name"><br><br>
+
+
+    Post Content : 
+    <input type="text" name="postcontent"><br><br>
+
+
+    Url Key : 
+	<input type="text" name="urlkey"><br><br>
+
+	<button>Save</button>
+	
+</form>
