@@ -1,0 +1,18 @@
+<h1><?php echo $this->getHelloWorldTxt(); ?></h1>
+
+<p>This is my first module</p>
+
+
+
+<?php
+
+	$om = \Magento\Framework\App\ObjectManager::getInstance();
+
+    $customerSession = $om->get('Magento\Customer\Model\Session');
+    if($customerSession->isLoggedIn()) {
+        echo   $customerSession->getCustomer()->getId()."<br/>";  // get Customer Id
+        echo   $customerSession->getCustomer()->getName()."<br/>";  // get  Full Name
+        echo   $customerSession->getCustomer()->getEmail()."<br/>"; // get Email Name
+        echo   $customerSession->getCustomer()->getGroupId()."<br/>";  // get Customer Group Id
+      }    
+?>
