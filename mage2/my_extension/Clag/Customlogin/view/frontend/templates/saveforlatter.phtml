@@ -1,0 +1,249 @@
+
+<?php
+$saveForLatterItemCollection = $block->getSaveForLatterItems();
+/*echo "<pre>";
+print_r($saveForLatterItemCollection->getData());
+echo "</pre>";*/
+
+//echo "==>".$block->getCofigItemsOption(16);
+
+/*$product = $block->getProduct(41);
+
+$getCartParams = $block->getAddToCartProductParams($product);
+
+$getWishlistParams = $block->getWishlistProductParams($product); 
+
+$getCompareParams = $block->getCompareProductParams($product); */
+
+/*var_dump($getCartParams);
+var_dump($getWishlistParams);
+var_dump($getCompareParams);*/
+
+?>
+
+
+
+<?php if (count($saveForLatterItemCollection->getData()) == 0) { ?>
+
+	<div>
+		<h1><?php echo __('Data Not Found');?></h1>
+	</div>
+	
+<?php } else { ?>
+<!------------->
+<table id="shopping-cart-table" class="cart items data table">
+    <caption role="heading" aria-level="2" class="table-caption"><?php echo __('saveforlatter');?></caption>
+    <thead>
+        <tr>
+            <th class="col item" scope="col"><span><?php echo __('Item');?></span></th>
+            <th class="col price" scope="col"><span><?php echo __('Price');?></span></th>
+            <th class="col qty" scope="col"><span><?php echo __('Qty');?></span></th>
+            <th class="col subtotal" scope="col"><span><?php echo __('Subtotal');?></span></th>
+            <th class="col subtotal" scope="col"><span><?php echo __('action');?></span></th>
+        </tr>
+    </thead>
+   	<tbody class="cart item">
+
+	<?php foreach ($saveForLatterItemCollection as $items) { ?>
+
+		<!--loop start-->
+
+		<?php 
+		$item_id = $items['item_id']; 
+		$product_id = $items['product_id']; 
+		$qty = number_format($items['qty'],0); //$items['qty']; 
+
+		//Catalog product data
+		$product = $block->getProduct($product_id);
+
+
+		/**/
+		if ($product->getImage())
+		{
+			$imageUrl = $block->_storeManagerInterface->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $product->getImage(); 	
+		} 
+		else{ 
+			$imageUrl = false;
+		}   	
+		/**/
+
+        //Custom save for later action
+		$product_id_config = $block->getCofigItemsOption($item_id);
+		$saveforlatterParams = $product_id_config['saveforlatterParams'];
+
+        //Wishlist action
+        $getWishlistParams = $block->getWishlistProductParams($product); 
+        /*$acurl = $this->getBaseUrl().'customlogin/customer/wishlistsaveforlatteraction/';
+        $data = array('product'=>$product->getId(), 'item_id'=>$item_id, 'customer'=>$this->getCustomerId());
+        $getWishlistSaveForLaterParam = array('action'=>$acurl,'data'=>$data);
+        $getWishlistSaveForLaterParam = json_encode($getWishlistSaveForLaterParam);*/
+
+
+        //Custom Delete save for later action*/
+        $acurl = $this->getBaseUrl().'customlogin/customer/deletesaveforlatteraction/';
+        $data = array('product'=>$product->getId(), 'item_id'=>$item_id);
+        $getDeleteSaveForLaterParam = array('action'=>$acurl,'data'=>$data);
+        $getDeleteSaveForLaterParam = json_encode($getDeleteSaveForLaterParam);
+		?>
+
+    <tr class="item-info">
+
+        <td data-th="Item" class="col item">
+        	<a href="<?php echo $product->getProductUrl(); ?>" title="<?php echo $product->getName(); ?>" tabindex="-1" class="product-item-photo">    
+				<span class="product-image-container" style="width:165px;">
+				    <span class="product-image-wrapper" style="padding-bottom: 100%;">
+				   	<?php if ($imageUrl) { ?>
+
+				   	 <img class="product-image-photo" src="<?php echo $imageUrl;?>" width="165" height="165" alt="<?php echo $product->getName(); ?>">
+		      
+		      		<?php } else{ 
+	
+		      			echo $block->getPlaceholderImage();
+					
+		      		}
+		      		?>
+				    </span>
+				</span>
+           </a>	
+           <div class="product-item-details">
+                <strong class="product-item-name">
+                   <a href="<?php echo $product->getProductUrl(); ?>"><?php echo $product->getName(); ?></a>
+                 </strong>
+                    <!-- <dl class="item-options">
+                    	<dt>Homeopaths Enhancement==</dt>
+                    	<dd>1M==</dd>
+                    	<dt>Homeopaths Form==</dt>
+                        <dd>Ointment / Cream==</dd>
+                    </dl> -->
+            </div>
+        </td>
+
+        <td class="col price" data-th="Price">
+    		<span class="price-excluding-tax" data-label="Excl. Tax">
+                    <span class="cart-price">
+                        <span class="price">
+                        	<?php 
+                        	if ($product->getTypeId() == "configurable") {
+							$product_id_config = $block->getCofigItemsOption($item_id);
+							$productc = $block->getProduct($product_id_config['productId']);
+							echo $block->getCurrentCurrencySymbol().number_format($productc->getPrice(),2);
+							} 
+							else 
+							{
+								echo $block->getCurrentCurrencySymbol().number_format($product->getPrice(),2);
+							}
+                        	?>
+                        </span>            
+                    </span>
+            </span>
+        </td>
+
+
+        <td class="col qty" data-th="<?php echo $block->escapeHtml(__('Qty')); ?>">
+            <div class="field qty">
+                <div class="control qty">
+                    <?php echo $qty;?>
+                </div>
+            </div>
+        </td>
+
+        <td class="col subtotal" data-th="Subtotal">           
+    		<span class="price-excluding-tax" data-label="Excl. Tax">
+                <span class="cart-price">
+                	<span class="price">
+                		<?php 
+                        	if ($product->getTypeId() == "configurable") {
+							$product_id_config = $block->getCofigItemsOption($item_id);
+							$productc = $block->getProduct($product_id_config['productId']);
+							$Linetotal = floatval($productc->getPrice())*intval($qty);
+                			echo $block->getCurrentCurrencySymbol().number_format($Linetotal,2);
+
+							} 
+							else {
+								$Linetotal = floatval($product->getPrice())*intval($qty);
+                				echo $block->getCurrentCurrencySymbol().number_format($Linetotal,2);
+							}
+                        ?>
+                	</span> 
+            	</span>
+            </span>
+        </td>
+
+        <td class="col" data-th="action"> 
+
+            <a href="#" data-post='<?php echo $getWishlistParams;?>' class="use-ajax action action-towishlist">
+                <span>Move to Wishlist</span>
+            </a>
+
+            <a href="#" data-post='<?php echo $getDeleteSaveForLaterParam;?>' class="">
+                <span>Remove</span>
+            </a>
+
+        	<button type="button" data-post='<?php echo $saveforlatterParams;?>' title="Add to Cart" data-item-id="<?php echo $item_id;?>" class="">
+                <span>Add to Cart</span>
+            </button>
+        </td>
+    </tr>
+
+	<!--loop end-->
+	<?php } ?>
+
+	</tbody>
+</table>
+<!------------->
+
+<?php if ($block->getPagerHtml()): ?>
+   <div class="order-products-toolbar toolbar bottom"><?php echo $block->getPagerHtml(); ?></div>
+<?php endif ?>
+
+
+<script type="text/javascript">
+require(['jquery'],function($){
+
+    $(document).on('click', '.save_for_latter', function(e){
+
+            e.stopImmediatePropagation(); 
+
+            /*var target = $(this);
+            var txt1 =  '<?php //echo __('Loading...');?>';
+            var txt2 =  '<?php //echo __('Save for latter');?>';
+            var productId = target.data("id");*/
+           
+
+            /*Ajax*/
+            /*$.ajax({
+                url: '<?php //echo $block->getUrl('customlogin/customer/saveforlatteraction');?>',
+                type: "POST",
+                data: {productId: productId},
+                cache: false,
+                dataType: 'json',
+                beforeSend: function(){
+                    target.text(txt1);
+              
+                },
+                complete: function(){
+    
+                    target.text(txt2);
+                },
+                success: function (data) {  
+                    //alert(data); 
+                    if (data['result']) {
+                        alert('The item has been added in Save for latter list ')
+                    }
+                    else{
+                         alert('The item not  been added in Save for latter list')
+                    }
+
+                    location.href = location.href;
+                    console.log(data);
+                             
+                }
+            });*/
+            /*Ajax*/
+    });
+
+});
+</script>
+
+
+<?php } ?>

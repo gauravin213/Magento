@@ -1,0 +1,260 @@
+<?php
+$Wishlist_collection =  $this->getCollection();
+?>
+
+<?php if (count($Wishlist_collection) == 0) { ?>
+
+<div><?php echo __('There is not any data');?></div>
+
+<?php } else { ?>
+
+
+<div class="cart table-wrapper">
+<div class="wishlist-wrapper">
+<h2><i class="porto-icon-heart"></i>WISHLIST / SAVED FOR LATER</h2>
+	    <table id="shopping-cart-table" class="cart items data table">
+	    <!--<thead>
+	        <tr>
+	            <th class="col item" scope="col"><span>Ranking</span></th>
+	           	<th class="col price" scope="col"><span>Price</span></th>
+	            <th class="col qty" scope="col"><span>Qty</span></th>
+	            <th class="col subtotal" scope="col"><span>Subtotal</span></th>
+	            <th class="col subtotal" scope="col" colspan="3"><span>Action</span></th>
+	        </tr>
+	    </thead>-->
+		<tbody class="cart item">
+
+			<?php  foreach ($Wishlist_collection as $item) { 
+
+			$product = $this->Product->create()->load($item->getProduct()->getId());
+
+			$imageUrl = $this->StoreManagerInterface->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $product->getImage();
+
+			?>
+
+		    <tr class="item-info">
+		    	
+		      	<td data-th="Item" class="col item item-image" >
+		      	
+		      		<!--Image-->
+		      		<?php if ($product->getImage()) { ?>
+
+		      		<a href="<?php echo $product->getProductUrl();?>" title="Xyz" tabindex="-1" class="product-item-photo">          
+						<span class="product-image-container">
+							<span class="product-image-wrapper">
+							   <img class="product-image-photo" src="<?php echo $imageUrl;?>" alt="product">
+							</span>
+						</span>
+			        </a>
+		      			
+		      		<?php } else{ 
+					echo '<div class="placeholder-image"><span class="product-image-container">
+							<span class="product-image-wrapper">';
+		      			echo $this->getPlaceholderImage();
+					echo '</span></span></div>';
+		      		}
+		      		?>
+			      
+			        <!--Image-->
+					</td>
+					
+			             <td>           
+			        <!--Name-->
+			       	<div class="product-item-details">
+			            <strong class="product-item-name">
+			                 <a href="http://127.0.0.1/magento220/product-1.html">
+			                 	<?php echo $item->getName();?>
+			                 </a>
+			            </strong>
+			        </div>
+			        <!--Name-->
+
+		      	</td>
+				
+				<td> <!---->
+				<div class="col-title" scope="col"><span>Ranking</span></div>
+                          <?php 
+                            $ProductId =  $product->getId();
+
+                            echo $this->getLayout()
+                            ->createBlock(
+                                'Magento\Framework\View\Element\Template', 
+                                '', 
+                                [
+                                    'data' => [
+                                        'rproductId' => $ProductId
+                                    ]
+                                ]
+                            )
+                            ->setTemplate("Magento_Checkout::reviewprogressbar.phtml")
+                            ->toHtml();
+
+
+                            ?>
+                        <!----></td>
+		      
+
+		       
+		       <!--Price-->
+		        <?php if ($product->getTypeId() == "configurable") { ?>
+
+		        <td class="col price" data-th="Price">
+				<div class="col-title" scope="col"><span>Product Price</span></div>
+		    		<span class="price-excluding-tax" data-label="Excl. Tax">
+		                <span class="cart-price">
+		                	<span class="price">
+		                		<?php
+		                		$regularPrice = $product->getPriceInfo()->getPrice('regular_price');
+		                		echo $this->getCurrentCurrencySymbol().$regularPrice->getMinRegularAmount();
+						        //echo $regularPrice->getMinRegularAmount().'-'.$regularPrice->getMaxRegularAmount();
+						        ?>
+		                	</span>            
+		           		</span>
+
+		            </span>
+		        </td>
+
+				<?php } else { ?>
+
+				<td class="col price" data-th="Price">
+				<div class="col-title" scope="col"><span>Product Price</span></div>
+		    		<span class="price-excluding-tax" data-label="Excl. Tax">
+		                <span class="cart-price">
+		                	<span class="price">
+		                		<?php echo $this->getCurrentCurrencySymbol().number_format($item->getPrice(),2);?>
+		                	</span>            
+		           		</span>
+		            </span>
+		        </td>
+
+				<?php } ?>
+		        <!--Price-->
+
+
+		        <!--Qty-->
+		        <td class="col qty" data-th="Qty">
+				<div class="col-title" scope="col"><span>Quantity</span></div>
+		            <div class="field qty">
+		                <label class="label" for="cart-13-qty">
+		                    <span>Qty</span>
+		                </label>
+		                <div class="control qty">
+		                    <input id="cart-<?php echo  $item->getId();?>-qty" name="cart[13][qty]" data-cart-item-id="xyz" value="1" type="number" size="4" title="Qty" class="input-text qty" data-validate="{required:true,'validate-greater-than-zero':true}" data-role="cart-item-qty">
+		                </div>
+		            </div>
+		        </td>
+
+		     	<script type="text/javascript">
+				require(['jquery'],function($){
+					$(document).ready(function(){ 
+					   	$(document).on('keyup', '#cart-<?php echo  $item->getId();?>-qty', function(){
+					   		$('.cart-<?php echo  $item->getId();?>-qty').val($(this).val());
+					   	});
+					});
+				});
+		        </script>
+		        <!--Qty-->
+
+		        <!--Subtotal-->
+		        <td class="col subtotal" data-th="Subtotal">
+		        <div class="col-title" scope="col"><span>Total Price</span></div>
+				    <span class="price-excluding-tax" data-label="Excl. Tax">
+				        <span class="cart-price">
+				            <span class="price">$100.00</span>
+				       	</span>
+
+				    </span>
+
+		        </td>
+		        <!--Subtotal-->
+
+
+		        <!--Action-->
+		        <td colspan="100">
+		            <div class="actions-toolbar action-icon">
+
+					    <a class="action action-edit" href="<?php echo $product->getProductUrl();?>" title="Edit item parameters">
+					        <span>Edit</span>
+					    </a>
+
+						<form  class="trash-item" method="post" action="<?php echo $block->getUrl('customlogin/index/removewishlist');?>">
+							<input type="hidden" name="WishlistId" value="<?php echo $item->getWishlistId();?>">
+							<input type="hidden" name="CustomerId" value="<?php echo $this->getCustomerId();?>">
+							<input type="hidden" name="ProductId" value="<?php echo $item->getProductId();?>">
+							<button class="action action-delete delete-item"></button>
+						</form>
+
+					<!--Add to cart-->
+					<?php if ($product->getTypeId() == "configurable") { ?>
+                      <div class="wish-cart">
+						<a href="<?php echo $product->getProductUrl();?>" class="action tocart primary">
+							<span><?php echo __('Add to Cart') ?></span>
+						</a>
+                      </div>
+					<?php } else { ?>
+
+					<?php $postParams = $block->getAddToCartPostParams($product); ?>
+
+
+					<form class="add-item" method="post" action="<?php echo $block->getUrl('customlogin/index/removewishlist');?>">
+							<input type="hidden" name="WishlistId" value="<?php echo $item->getWishlistId();?>">
+							<input type="hidden" name="CustomerId" value="<?php echo $this->getCustomerId();?>">
+							<input type="hidden" name="ProductId" value="<?php echo $item->getProductId();?>">
+
+							<input type="hidden" name="RemoveBeforAddtocart" value="1">
+
+							<input type="hidden" name="qty" class="qty cart-<?php echo  $item->getId();?>-qty" maxlength="12" value="1"/>
+
+							<button class="action action-delete add-before-delete"><?php echo __('Add to Cart') ?></button>
+					</form>
+
+					<!-- <form data-role="tocart-form" action="<?php //echo $postParams['action']; ?>" method="post">
+					    <input type="hidden" name="product" value="<?php //echo $postParams['data']['product']; ?>">
+					                                           
+					    <?php //if(1):?>
+					        <div class="qty-box">
+					            <a href="javascript:void(0)" class="qtyminus"><i class="porto-icon-minus"></i></a>
+					            <input type="hidden" name="qty" class="qty cart-<?php //echo  $item->getId();?>-qty" maxlength="12" value="1" title="<?php /* @escapeNotVerified */ //echo __('Qty') ?>" class="input-text qty" data-validate="<?php //echo $block->//escapeHtml(json_encode($block->getQuantityValidators())) ?>"/>
+					            <a href="javascript:void(0)" class="qtyplus"><i class="porto-icon-plus"></i></a>
+					        </div>
+					    <?php //endif;?>
+					    <?php //echo $block->getBlockHtml('formkey')?>
+					    <button type="submit" title="<?php //echo $block->escapeHtml(__('Add to Cart')); ?>" class="action tocart primary">
+					     <span><?php //echo __('Add to Cart') ?></span>
+					    </button>
+					</form> -->
+					<?php } ?>	
+					<!--Add to cart-->				
+
+
+
+					</div>
+		        </td>
+		        <!--Action-->
+
+		    </tr>
+		    <?php } ?>
+
+		  
+		</tbody>
+		</table>
+		</div>
+</div>
+
+
+<div class="wish-product">
+<?php
+echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('wishlist_carousel')->toHtml();
+?>
+</div>
+
+<script type="text/x-magento-init">
+    {
+        "[data-role=tocart-form], .form.map.checkout": {
+            "catalogAddToCart": {}
+        }
+    }
+</script>
+
+
+<?php } ?>

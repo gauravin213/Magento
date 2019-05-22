@@ -1,0 +1,113 @@
+<?php
+$_currentOrder = $this->getCurrentOrdersCollection();
+echo $this->getLayout()->createBlock('Magento\Framework\View\Element\Template')
+        ->setTemplate("Clag_Customlogin::CustomOrderTabs/tabs.phtml")
+        ->toHtml();
+?>
+<h1><?php echo __('Current Order');?></h1>
+<?php if ($_currentOrder && count($_currentOrder)): ?>
+    <div class="table-wrapper orders-history">
+        <table class="data table table-order-items history" id="my-orders-table">
+            <caption class="table-caption"><?= /* @escapeNotVerified */ __('Orders') ?></caption>
+            <thead>
+                <tr>
+                	<th scope="col" class="col id"><?= /* @escapeNotVerified */ __('Images') ?></th>
+                	<th scope="col" class="col id"><?= /* @escapeNotVerified */ __('Titles') ?></th>
+                    <th scope="col" class="col id"><?= /* @escapeNotVerified */ __('Order #') ?></th>
+                    <th scope="col" class="col date"><?= /* @escapeNotVerified */ __('Date') ?></th>
+                    <?= /* @noEscape */ $block->getChildHtml('extra.column.header') ?>
+                    <th scope="col" class="col shipping"><?= /* @escapeNotVerified */ __('Ship To') ?></th>
+                    <th scope="col" class="col total"><?= /* @escapeNotVerified */ __('Order Total') ?></th>
+                    <th scope="col" class="col status"><?= /* @escapeNotVerified */ __('Status') ?></th>
+                    <th scope="col" class="col actions"><?= /* @escapeNotVerified */ __('Action') ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($_currentOrder as $_order): ?>
+
+            <?php 
+                foreach ($_order->getAllVisibleItems() as $_item) {                    
+                $productId = $_item->getProductId(); 
+        		$product = $this->_productFactory->create()->load($productId);
+
+        		$productName = $product->getName();
+        		$productUrl = $product->getProductUrl();
+
+        		if ($product->getImage()) 
+        		{
+        			$imageUrl = $this->_storeManagerInterface->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $product->getImage();
+        		} 
+        		else 
+        		{
+        			$imageUrl = false;
+        		}
+            }
+            ?> 
+
+                    <tr>
+                    	<td>
+                        <?php if ($imageUrl) { ?>
+		                    <a href="<?php echo $productUrl;?>" title="Xyz" tabindex="-1" class="product-item-photo">          
+								<span>
+									<span>
+									   <img class="product-image-photo" src="<?php echo $imageUrl;?>" alt="product">
+									</span>
+								</span>
+					        </a>
+                        <?php } else { ?>
+
+		                    <div class="placeholder-image">
+		                       	<span>
+									<span>
+					      			<?php echo $this->getPlaceholderImage();?>
+									</span>
+								</span>
+							</div>
+                            	
+                        <?php } ?>    
+                        </td>
+
+                        <td>
+                            <?php 
+                            echo $productName;
+                            ?>    
+                        </td>
+
+                        <td data-th="<?= $block->escapeHtml(__('Order #')) ?>" class="col id"><?= /* @escapeNotVerified */ $_order->getRealOrderId() ?></td>
+                        <td data-th="<?= $block->escapeHtml(__('Date')) ?>" class="col date"><?= /* @escapeNotVerified */ $block->formatDate($_order->getCreatedAt()) ?></td>
+                        <?php $extra = $block->getChildBlock('extra.container'); ?>
+                        <?php if ($extra): ?>
+                            <?php $extra->setOrder($_order); ?>
+                            <?= /* @noEscape */ $extra->getChildHtml() ?>
+                        <?php endif; ?>
+                        <td data-th="<?= $block->escapeHtml(__('Ship To')) ?>" class="col shipping"><?= $_order->getShippingAddress() ? $block->escapeHtml($_order->getShippingAddress()->getName()) : '&nbsp;' ?></td>
+                        <td data-th="<?= $block->escapeHtml(__('Order Total')) ?>" class="col total"><?= /* @escapeNotVerified */ $_order->formatPrice($_order->getGrandTotal()) ?></td>
+                        <td data-th="<?= $block->escapeHtml(__('Status')) ?>" class="col status"><?= /* @escapeNotVerified */ $_order->getStatusLabel() ?></td>
+                        <td data-th="<?= $block->escapeHtml(__('Actions')) ?>" class="col actions">
+                            <a href="<?= /* @escapeNotVerified */ $block->getViewUrl($_order) ?>" class="action view">
+                                <span><?= /* @escapeNotVerified */ __('View Order') ?></span>
+                            </a>
+                            <?php if ($this->helper('Magento\Sales\Helper\Reorder')->canReorder($_order->getEntityId())) : ?>
+                                <a href="#" data-post='<?php /* @escapeNotVerified */ echo
+                                $this->helper(\Magento\Framework\Data\Helper\PostHelper::class)
+                                    ->getPostData($block->getReorderUrl($_order))
+                                ?>' class="action order">
+                                    <span><?= /* @escapeNotVerified */ __('Reorder') ?></span>
+                                </a>
+                            <?php endif ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!--pagination-->
+    <?php if ($block->getPagerHtml()): ?>
+        <div class="order-products-toolbar toolbar bottom"><?= $block->getPagerHtml() ?></div>
+    <?php endif ?>
+    <!--pagination-->
+
+<?php else: ?>
+    <div class="message info empty"><span><?= /* @escapeNotVerified */ __('You have placed no orders.') ?></span></div>
+<?php endif ?>

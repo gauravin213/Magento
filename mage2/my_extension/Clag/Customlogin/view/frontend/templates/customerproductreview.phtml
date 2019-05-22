@@ -1,0 +1,135 @@
+<style type="text/css">
+    .cus_mb20{
+       margin-bottom: 4em;
+    }
+</style>
+
+<?php
+
+$imageUrl = $this->getProductImage(); echo "<br>";
+
+$ProductUrl = $this->getProductUrl();
+
+$data = $this->getRequest()->getParams();
+
+$ProductId = base64_decode($data['pid']);
+
+/*$resource = $this->resource;
+$connection = $resource->getConnection();
+$tableName = $resource->getTableName('rating_option_vote'); 
+//Select Data from table
+$sql = "Select * FROM " . $tableName." WHERE entity_pk_value=".$ProductId;
+$result = $connection->fetchAll($sql);
+
+$RatingVoteArray = array();
+
+$RatingPercentArray = array();
+
+foreach ($result as $data) {
+
+    $RatingPercentArray[$data['review_id']] = $data['percent'];
+}*/
+
+$RatingPercentArray = $this->getRatingPercentArray($ProductId);
+
+$collection = $this->getProduct();
+?>
+
+<?php
+if (count($collection) == 0) {
+    echo "<h3>There is no any comment</h3>";
+}
+else
+{
+?>
+<div class="container Reviwe-container">
+    <div class="row">
+    	<div class="col-md-12 text-center review-heading">
+    		<h1 class="cs_rvw_tit">Review </h1>
+            <img src="http://avgerinospharmacy.gr/pub/media/wysiwyg/images/star-heading.png" alt="">
+    	</div>
+       </div>
+    <?php foreach ($collection as $data) { ?> 
+    <div class="cus-review-block">
+       	<div class="row">
+        	<div class="col-sm-2">
+        		<!--Image-->
+	        	<div>
+			      	<?php if ($imageUrl) { ?>
+
+			      		<a href="<?php echo $ProductUrl;?>" title="Xyz" tabindex="-1" class="product-item-photo">          
+							<span class="product-image-container" style="width:165px;">
+								<span class="product-image-wrapper" style="padding-bottom: 100%;">
+								   <img class="product-image-photo" src="<?php echo $imageUrl;?>" width="165" height="165" alt="Xyz">
+								</span>
+							</span>
+				        </a>
+			      			
+			      		<?php } else{ 
+			      			echo $this->getPlaceholderImage();
+			      		}
+			      	?>
+	        	</div>
+	        	<!--Image-->
+        	</div>
+        	<div class="col-sm-10">
+            <div class="review-rating-detail">
+            
+        		<!--Start rating-->
+		        <div class="review-ratings cus_cmnt_rvw">
+		            <div class="rating-summary item" itemprop="reviewRating" itemscope="" itemtype="http://schema.org/Rating">
+		                <div class="rating-result" title="<?php echo $RatingPercentArray[$data['review_id']];?>%">
+		                    <meta itemprop="worstRating" content="1">
+		                    <meta itemprop="bestRating" content="100">
+		                    <span style="width:<?php echo $RatingPercentArray[$data['review_id']];?>%">
+		                        <span itemprop="ratingValue"><?php echo $RatingPercentArray[$data['review_id']];?>%</span>
+		                    </span>
+		                </div>
+		            </div>
+		        </div>
+		        <!--Start rating-->
+
+		       
+
+		        <!--User Nicname-->
+		        <div class="cus_comnt_user">
+		        <?php 
+		        	echo __('By');?> : <?php echo $data['nickname'];?> <?php echo __('On');
+		        ?> 
+		        </div>
+		        <!--User Nicname-->
+
+		        <!--Date-->
+		        <div>
+		        <?php 
+		            $date=date_create($data['created_at']);
+		            echo date_format($date,"d M Y");
+		        ?>
+		        </div>
+		        <!--Date-->
+				</div>
+				<div class="review-rating-description">
+
+				<!--Title-->
+		        <div class="cus_comnt_tit">
+		        	<?php echo $data['title'];?>	
+		        </div>
+		        <!--Title-->
+
+		        <!--Details-->
+		        <div class="cus_comnt_dsc">
+		        	<?php echo substr($data['detail'], 0, 300);?>
+		        </div>
+		        <!--Details-->
+                </div>
+        	</div>
+       	</div>
+    </div>
+    <?php } ?>
+
+     <?php if ($block->getPagerHtml()): ?>
+        <div class="order-products-toolbar toolbar bottom"><?php echo $block->getPagerHtml(); ?></div>
+    <?php endif ?>
+    
+</div>
+<?php } ?>

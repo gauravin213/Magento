@@ -1,0 +1,580 @@
+<?php
+$customerId = $this->getCustomerId();
+
+$baseurl = $this->getBaseUrl();
+
+$store = $this->StoreManagerInterface->getStore();
+$mideaBasewUrl = $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
+
+
+/*echo "uppppp-->".$this->escapeHtml($this->Rememberme->getCookieloginName()); echo "<br>";
+
+echo "p-->".$this->escapeHtml($this->Rememberme->getCookieloginPwd()); echo "<br>";
+
+echo "r-->".$this->escapeHtml($this->Rememberme->getCookieloginChk()); echo "<br>";*/
+
+echo __('This identifier is reserved for "CMS Home Page" in configuration.');
+
+if($customerId) { ?>
+
+	<a href="<?php echo $baseurl;?>customer/account">
+		 <span><img src="<?php echo $mideaBasewUrl.'porto/web/images/login.png';?>" /></span>
+		<?php echo __('My account');?>
+	</a> / 
+	<a href="<?php echo $baseurl;?>customer/account/logout">
+		<?php echo __('Logout');?>	
+	</a>
+
+<?php } else { ?>
+
+    <!-- <a href="<?php echo $baseurl;?>customer/account/login">
+     <span><img src="<?php echo $mideaBasewUrl.'porto/web/images/login.png';?>" /></span><?php echo __('Login');?></a> / 
+    <a href="<?php echo $baseurl;?>customer/account/create">Register</a> -->
+
+   <!--  <button type="button" id="open_cusModal">Open Modal</button> -->
+
+    <a href="javascript:void(0);"  id="open_cusModal"><?php echo __('Login / Register');?></a>
+
+<?php } ?>
+
+
+
+
+
+<?php if(!$this->getCustomerId()): ?>
+<!--Login popup modal-->
+<div id="cusModal" class="cus_modal" style="display:none;">
+  <div class="cusmdal_content">
+  	<div class="cus_mheader">
+  		<div class="cus_mtitle">
+  			Modal Name
+  		</div>
+  		<div class="cus_modalclose">
+  			<a href="#" id="cus_mdclose">close</a>
+  		</div>
+  	</div>
+  	<div class="cus_modalcontent" >
+  		<!--Login popup-->
+	<div class="login-overlay">
+		<div class="login-register-popup">
+			<div class="response-msg"></div>
+			<div class="login-container">
+				<form class="popup-login-form" method="POST" action="">
+					<div class="container">
+						<label><b><?php echo __('Email') ?></b></label>
+						<?php echo $this->escapeHtml($this->Rememberme->getCookieloginName()) ?>
+						<input type="email" placeholder="<?php echo __('Enter Email') ?>" name="username" value="<?php echo $this->escapeHtml($this->Rememberme->getCookieloginName()) ?>"  required>
+
+						<label><b><?php echo __('Password') ?></b></label>
+						<?php echo $this->escapeHtml($this->Rememberme->getCookieloginPwd()) ?>
+						<input type="password" placeholder="<?php echo __('Enter Password') ?>" name="password" value="<?php echo $this->escapeHtml($this->Rememberme->getCookieloginPwd()) ?>" required>
+
+
+						<div class="field rememberme">
+		                   <label for="rememberme" class="label"><span><?php /* @escapeNotVerified */ echo __('Remember Me') ?></span></label>
+		                   <div class="control">
+		                       <input name="rememberme" type="checkbox"  class="input-checkbox" id="rememberme" <?php if ($this->Rememberme->getCookieloginChk()){ ?>checked="checked"<?php } ?> title="<?php /* @escapeNotVerified */ echo __('Rememberme on this computer') ?>" >
+		                   </div>
+		               </div>
+
+
+						<button class="action login primary" type="submit"><?php echo __('Login') ?></button>
+						<div class="register-link"><span><?php echo __('New Here?') ?></span>&nbsp;<a href="#"><?php echo __('Register') ?></a></div>
+					</div>
+
+					<div class="container" style="background-color:#f1f1f1">
+						<!-- <button title="<?php echo __('Click to close') ?>" type="button" class="cancelbtn"><?php echo __('Cancel') ?></button> -->
+						<span class="psw"><?php echo __('Forgot') ?> <a href="<?php echo $block->getUrl('customer/account/forgotpassword') ?>"><?php echo __('password') ?>?</a></span>
+					</div>
+				</form>
+			</div>
+
+			<!---->
+			<div class="login-container">
+				<form class="popup-forget-form" method="POST" action="">
+					<div class="container">
+
+						<label><b><?php echo __('Email') ?></b></label>
+
+						<input type="email" placeholder="<?php echo __('Enter Email') ?>" name="email" required>
+
+
+						<button class="action forget primary" type="submit">
+							<?php echo __('forget') ?>	
+						</button>
+
+					</div>
+				</form>
+			</div>
+			<!---->
+
+			<div class="register-container">
+				
+				<!--goup radio buttons-->
+			<div class="radio-check check-container">
+							<ul>
+								<li>
+								<label><?php echo __('Personal');?>
+	                            <input type="radio" checked="checked" name="group_id"  value="4" class="user_groups">
+								<span class="checkmark"></span>
+									</label>
+									
+								</li>
+
+								<li>
+								<label><?php echo __('Healthcare Professional');?>
+	                            <input type="radio" name="group_id" value="5" class="user_groups">
+								<span class="checkmark"></span>
+									</label>
+									
+								</li>
+
+								<li>
+								<label><?php echo __('Company');?>
+	                            <input type="radio" name="group_id" value="6" class="user_groups">
+								<span class="checkmark"></span>
+									</label>
+								</li>
+							</ul>
+			</div>
+			<!--goup radio buttons-->
+
+			<!---->
+<!--group 4-->
+<form class="popup-register-form" method="POST" action="" id="group-id-4">
+	<div class="container">
+
+			<input type="hidden" name="group_id"  value="4">
+
+			<input type="text" placeholder="<?php echo __('Enter First Name') ?>" name="firstname" required>
+
+			<input type="text" placeholder="<?php echo __('Enter Last Name') ?>" name="lastname" required>
+
+			<input type="email" placeholder="<?php echo __('Enter Email') ?>" name="email" required>
+
+			<input type="password" placeholder="<?php echo __('Enter Password') ?>" name="password" required>
+
+			<input type="password" placeholder="<?php echo __('Confirm Password') ?>" name="password_confirmation" required>
+
+			<input type="text" placeholder="<?php echo __('Phone') ?>" name="telephone">
+
+			<input type="text" placeholder="<?php echo __('Mobile') ?>" name="mobile">
+
+			<!---->
+			<input type="hidden" name="speciality" value="">
+
+			<input type="hidden" name="registry_number" value="">
+
+			<input type="hidden" name="companyname"  value="">
+
+			<input type="hidden" name="vat"  value="">
+
+			<input type="hidden" name="address"  value="">
+			<!---->
+
+		
+
+			<div class="submit-container">
+				<button class="action login primary" type="submit"><?php echo __('Sign Up') ?></button>
+			</div>
+	</div>
+</form>
+
+
+<!--group 5-->
+<form class="popup-register-form" method="POST" action="" id="group-id-5" style="display: none;">
+	
+	<div class="container">
+
+		<input type="hidden" name="group_id"  value="5">
+
+		<input type="text" placeholder="<?php echo __('Enter First Name') ?>" name="firstname" required>
+
+		<input type="text" placeholder="<?php echo __('Enter Last Name') ?>" name="lastname" required>
+
+		<input type="email" placeholder="<?php echo __('Enter Email') ?>" name="email" required>
+
+		<input type="password" placeholder="<?php echo __('Enter Password') ?>" name="password" required>
+
+		<input type="password" placeholder="<?php echo __('Confirm Password') ?>" name="password_confirmation" required>
+
+		<input type="text" placeholder="<?php echo __('Phone') ?>" name="telephone">
+
+		<input type="text" placeholder="<?php echo __('Mobile') ?>" name="mobile">
+
+		<input type="text" placeholder="<?php echo __('Speciality') ?>" name="speciality">
+
+		<input type="text" placeholder="<?php echo __('Registry Number') ?>" name="registry_number">
+
+		<!---->
+		<input type="hidden" name="companyname" value="">
+
+		<input type="hidden" name="vat" value="">
+
+		<input type="hidden" name="address" value="">
+		<!---->
+
+		<div class="submit-container">
+			<button class="action login primary" type="submit"><?php echo __('Sign Up') ?></button>
+		</div>
+
+	</div>
+
+</form>
+
+
+<!--group 6-->
+<form class="popup-register-form" method="POST" action="" id="group-id-6" style="display: none;">
+	
+	<div class="container">
+
+		<input type="hidden" name="group_id"  value="6">
+
+		<input type="text" placeholder="<?php echo __('Enter First Name') ?>" name="firstname" required>
+
+		<input type="text" placeholder="<?php echo __('Enter Last Name') ?>" name="lastname" required>
+
+		<input type="email" placeholder="<?php echo __('Enter Email') ?>" name="email" required>
+
+		<input type="password" placeholder="<?php echo __('Enter Password') ?>" name="password" required>
+
+		<input type="password" placeholder="<?php echo __('Confirm Password') ?>" name="password_confirmation" required>
+
+		<input type="text" placeholder="<?php echo __('Phone') ?>" name="telephone">
+
+		<input type="text" placeholder="<?php echo __('Mobile') ?>" name="mobile">
+
+		<!---->
+		<input type="hidden" name="speciality" value="">
+
+		<input type="hidden" name="registry_number" value="">
+		<!---->
+
+		<input type="text" placeholder="<?php echo __('Company Name') ?>" name="companyname">
+
+		<input type="text" placeholder="<?php echo __('VAT') ?>" name="vat">
+
+		<input type="text" placeholder="<?php echo __('Address') ?>" name="address">
+							
+		<div class="submit-container">
+			<button class="action login primary" type="submit"><?php echo __('Sign Up') ?></button>
+		</div>
+
+	</div>
+
+</form>
+			<!---->
+
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		require(['jquery'], function($) {
+
+			/*Start::Changing fields by account type*/
+			$(document).on('click', '.user_groups', function(){
+				var target = $(this);
+				var id = target.val();
+				$('.popup-register-form').hide();
+				$('#group-id-'+id).show();
+			});
+			/*End::Changing fields by account type*/
+
+			
+			var headerElem = $('.panel.header');
+			var loginLink = headerElem.find('.authorization-link').children('a');
+			var registerLink = headerElem.find('.authorization-link').next().children('a');
+			var loginOverlay = $('.login-overlay');
+			var loginBox = $('.login-overlay').find('.popup-login-form');
+			var registerBox = $('.login-overlay').find('.popup-register-form');
+			var loginButton = $('.popup-login-form').find('button[type=submit]');
+
+			/**/
+			var forgetButton = $('.popup-forget-form').find('button[type=submit]');
+			/**/
+
+			var registerButton = $('.popup-register-form').find('button[type=submit]');
+
+
+			/*var loginUrl = "<?php //echo $block->getUrl('customerlogin/ajax/login') ?>";
+			var registerUrl = "<?php //echo $block->getUrl('customerlogin/ajax/register') ?>";*/
+
+			var loginUrl = "<?php echo $block->getUrl('customlogin/customer/login') ?>";
+
+			/**/
+			var forgetUrl = "<?php echo $block->getUrl('customlogin/customer/forgot') ?>";
+			/**/
+
+			var registerUrl = "<?php echo $block->getUrl('customlogin/customer/register') ?>";
+
+			// Texts
+			var loginText = "<?php echo __('Login') ?>";
+			/**/
+			var forgetText = "<?php echo __('Forget pp') ?>";
+			/**/
+			var loggingText = "<?php echo __('Please Wait...') ?>";
+
+			/**/
+			var forgetingText = "<?php echo __('Please Wait...') ?>";
+			/**/
+
+			var registerText = "<?php echo __('Sign Up') ?>";
+			var registeringText = "<?php echo __('Please Wait...') ?>";
+
+			loginLink.click(function(e){
+				e.preventDefault(e);
+				loginOverlay.show();
+				loginBox.show();
+			});
+
+			registerLink.click(function(e){
+				e.preventDefault(e);
+				loginOverlay.show();
+				registerBox.show();
+			});
+
+			$('.cancelbtn').click(function(){
+				loginOverlay.hide();
+				loginBox.hide();
+				registerBox.hide();
+			});
+
+			$('.login-link a').click(function(e){
+				e.preventDefault(e);
+				loginBox.show();
+				registerBox.hide();
+			});
+
+			$('.register-link a').click(function(e){
+				e.preventDefault(e);
+				loginBox.hide();
+				registerBox.show();
+			});
+
+			$('.popup-login-form').submit(function(){
+				loginButton.text(loggingText);
+				loginButton.attr("disabled", "disabled");
+				var formData = getFormData($(this));
+				$.ajax({
+		            type: "POST",
+		            url: loginUrl,
+		            data: formData,
+		            dataType: "json",
+		            success: function(data) { console.log(data);
+		                showResponse(data);
+		                if(data.errors) {
+		                	loginButton.text(loginText);
+		                	loginButton.removeAttr('disabled');
+		                } else {
+		                	location.reload();
+		                }
+		            }
+		        });
+				return false;
+			});
+
+			/**/
+			$('.popup-forget-form').submit(function(){
+				forgetButton.text(forgetingText);
+				forgetButton.attr("disabled", "disabled");
+				var formData = getFormData($(this));
+				$.ajax({
+		            type: "POST",
+		            url: forgetUrl,
+		            data: formData,
+		            dataType: "json",
+		            success: function(data) {
+		                showForgerResponse(data);
+		                if(data.errors) {
+		                	forgetButton.text(forgetText);
+		                	forgetButton.removeAttr('disabled');
+		                } else {
+		                	//location.reload();
+		                	alert("forget success");
+		                }
+		            }
+		        });
+				return false;
+			});
+			function showForgerResponse(data) { 
+
+				console.log(data);
+
+				alert(data['error']);
+
+				alert(data['success']);
+
+				if(data['error']) {
+					$('.response-msg').html("<div class='error'>"+data['error']+"</div>");
+				} else {
+					$('.response-msg').html("<div class='success'>"+data['success']+"</div>");
+				}
+				setTimeout(function(){ $('.response-msg').html(null); }, 5000);
+			}
+			/**/
+
+			$('.popup-register-form').submit(function(){
+
+				var isChecked = $("input[name=group_id]").is(':checked');
+
+				if (isChecked) 
+				{
+					//alert("11");
+					registerButton.text(registeringText);
+					registerButton.attr("disabled", "disabled");
+					var formData = getFormData($(this));
+					$.ajax({
+			            type: "POST",
+			            url: registerUrl,
+			            data: formData,
+			            dataType: "json",
+			            success: function(data) { console.log(data);
+			                showResponse(data);
+			                if(data.errors) {
+			                	registerButton.text(registerText);
+			                	registerButton.removeAttr('disabled');
+			                } else {
+			                	location.reload();
+			                }
+			            }
+			        });
+					return false;
+				}
+				else
+				{
+					var txtradio = '<?php echo __("Please select the radio button");?>';
+					alert(txtradio);
+					return false;
+				}
+			});
+
+			
+
+			function getFormData(formElem){
+			    var unindexed_array = formElem.serializeArray();
+			    var indexed_array = {};
+
+			    jQuery.map(unindexed_array, function(n, i){
+			        indexed_array[n['name']] = n['value'];
+			    });
+
+			    return indexed_array;
+			}
+
+			function showResponse(data) {
+				if(data.errors) {
+					$('.response-msg').html("<div class='error'>"+data.message+"</div>");
+				} else {
+					$('.response-msg').html("<div class='success'>"+data.message+"</div>");
+				}
+				setTimeout(function(){ $('.response-msg').html(null); }, 5000);
+			}
+
+
+			
+
+		});
+	</script>
+<!--Login popup-->
+  	</div>
+  </div>
+</div>
+<!--Login popup model-->
+<?php endif; ?>
+
+<script type="text/javascript">
+	require(['jquery'], function($) {
+		/**/
+			$("#cusModal").hide();
+			$("#open_cusModal").click(function(){
+				$("#cusModal").show();
+			});
+
+			$("#cus_mdclose").click(function(e){
+				e.preventDefault();
+
+				$("#cusModal").hide();
+			});
+			/**/
+
+	});
+</script>
+
+<style type="text/css">
+	.cus_modal {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 999999;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.5);
+}
+.cusmdal_content {
+    width: 75%;
+    background: #fff;
+    min-height: 100px;
+    margin: auto;
+    /*top: 10%;*/
+    position: absolute;
+    left: 10%;
+}
+
+.cus_mheader {
+    display: block;
+    width: 100%;
+    background: #4993a9;
+    float: left;
+    padding: 0.6em 1em;
+}
+
+.cus_mtitle {
+    color: #fff;
+    width: 50%;
+    float: left;
+    font-size: 1.4em;
+}
+
+.cus_modalclose {
+    width: 48%;
+    float: right;
+    color: #fff;
+    text-align: right;
+}
+
+.cus_modalclose a{color:#fff;}
+.cus_modalcontent {
+    padding: 1.3em 1.3em;
+    float: left;
+}
+.cus_modalcontent .login-container {
+    width: 48%;
+    float: left;
+}
+.cus_modalcontent .register-container {
+    width: 48%;
+    float: right;
+}
+</style>
+
+
+
+<?php
+/*echo $this->getLayout()
+        ->createBlock(
+            'Clag\Homeopath\Block\Form1', 
+            '', 
+            [
+                'data' => [
+                    'attrCode' => 'homeopaths_enhancement, homeopaths_form',
+                    'attrId' =>  '160, 161',
+                    'attrSetId' => 11
+                ]
+            ]
+        )
+        ->setTemplate("Clag_Homeopath::form1.phtml")
+        ->toHtml();*/
+?>
