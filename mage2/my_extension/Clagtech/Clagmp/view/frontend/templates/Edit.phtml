@@ -1,0 +1,189 @@
+
+<?php
+$Edit_id = $this->getRequest()->getParams('id');
+$Edit_id = $Edit_id['id'];
+$collection = $this->getCollection()->addFieldToFilter('id',array('eq' => $Edit_id));
+//var_dump($collection->getData());
+?>
+
+<h1 class="clagtech_tab">Edit Product</h1>
+
+<div class="clag_tab">
+
+
+<?php foreach ($collection as $data) {  $ids = $data['id'];?>
+
+<?php
+$obj = \Magento\Framework\App\ObjectManager::getInstance(); 
+$product = $obj->create('Magento\Catalog\Model\Product');
+$product->load($data['product_id']);
+
+$store = $obj->get('Magento\Store\Model\StoreManagerInterface')->getStore();
+$imageUrl = $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $product->getImage();
+
+$imgn = explode("/", $product->getImage());
+
+$imgn = end($imgn);
+
+?>
+
+
+
+
+
+
+<!---->
+<form enctype="multipart/form-data" method="post" action="" id="uploadForm">
+      
+      <input type="file" class="form-control" placeholder="Enter Title" accept="image/*" onchange="loadFile(event)" name="file" id="file"><br><br>
+      <button>Upload</button><br><br>
+
+
+      <h3 id="imageloag" style="display: none;">Loding..</h3>
+
+      <span id="img_msg" style="display: none;color: #fff;
+      background-color: #4f6d4f;
+      border-radius: 3px;
+      padding: 5px;">Image upload successfully</span><br><br>
+
+
+      <img src="<?php echo $imageUrl;?>" id="output" style="width:100px;border: 2px solid gray;padding: 13px;"/><br><br>
+
+      </form>
+
+      <form enctype="multipart/form-data" method="post" action="<?php echo $block->getUrl('clagmp/index/Editdata');?>" id="uploadFormpppp">
+
+      <input type="hidden" name="edit_id" id="edit_id" value="<?php echo $Edit_id;?>">
+
+      <input type="hidden" name="product_id" id="product_id" value="<?php echo $data['product_id'];?>">
+
+      <input type="hidden" name="customer_id" value="<?php echo  $this->getCustomerId();?>">
+
+     <!--  <input type="hidden" name="image" id="image" value="<?php //echo $imgn;?>"> -->
+
+      <input type="hidden" name="image" id="image" value="">
+
+      Title <br><input type="text" name="title" placeholder="title" value="<?php echo $data['title'];?>"> <br><br>
+
+      Undertitle <br><input type="text" name="undertitle" placeholder="undertitle" value="<?php echo $data['undertitle'];?>"> <br><br>
+
+      Dedcription <br><input type="text" name="description" placeholder="description" value="<?php echo $data['description'];?>"> <br><br>
+
+     Price <br><input type="text" name="price" placeholder="price" value="<?php echo $data['price'];?>"> <br><br>
+
+
+      Qty <br>
+      <select name="qty">
+        <option>--sellect--</option>
+        <option value="1" <?php if ($data['qty'] == 1) { echo 'selected="sellect"';}?>>1</option>
+        <option value="2" <?php if ($data['qty'] == 2) { echo 'selected="sellect"';}?>>2</option>
+        <option value="3" <?php if ($data['qty'] == 3) { echo 'selected="sellect"';}?>>3</option>
+        <option value="4" <?php if ($data['qty'] == 4) { echo 'selected="sellect"';}?>>4</option>
+        <option value="5" <?php if ($data['qty'] == 5) { echo 'selected="sellect"';}?>>5</option>
+        <option value="6" <?php if ($data['qty'] == 6) { echo 'selected="sellect"';}?>>6</option>
+        <option value="7" <?php if ($data['qty'] == 7) { echo 'selected="sellect"';}?>>7</option>
+        <option value="8" <?php if ($data['qty'] == 8) { echo 'selected="sellect"';}?>>8</option>
+        <option value="9" <?php if ($data['qty'] == 9) { echo 'selected="sellect"';}?>>9</option>
+        <option value="10" <?php if ($data['qty'] == 10) { echo 'selected="sellect"';}?>>10</option>
+      </select>
+
+      <br><br>
+
+      <button>Submit</button>
+    
+      </form>
+<!---->   
+
+
+<?php } ?>
+
+</div>
+
+
+ <script>
+  var loadFile = function(event) {
+
+    var output = document.getElementById('output');
+    output.src = URL.createObjectURL(event.target.files[0]);
+
+    var img = document.getElementById('img');
+    img.value= URL.createObjectURL(event.target.files[0]);
+    
+  };
+</script>
+
+ <style type="text/css">
+  .clagtech_tab{
+    background-color: #526552;
+    color: #fff;
+    padding: 6px;
+    border-radius: 5px;
+    margin-top: 14px;
+    margin-bottom: 18px;
+  }
+
+  .clag_tab{
+    background-color: #f6f6f6;
+    margin-left: 11px;
+    margin-right: 11px;
+    padding: 16px;
+  }
+
+  .clag_tab ul{
+    list-style-type:none;
+  }
+  </style>
+
+
+  <script type="text/javascript">
+  require(['jquery'],function($){
+
+    $(document).ready(function(){ 
+
+      /*$("#file").change(function(){ alert("change");
+
+        $("#uploadForm").submit();
+
+      });*/
+
+       
+      $("#uploadForm").on('submit',(function(e) { 
+        e.preventDefault();
+        $.ajax({
+              url: "<?php echo $block->getUrl('clagmp/index/Uploadfile');?>",
+              type: "POST",
+              data:  new FormData(this),
+              contentType: false,
+              processData:false,
+              beforeSend: function(){
+                $('#imageloag').show();
+              },
+              complete: function(){
+                  $('#imageloag').hide(); 
+              },
+              success: function(data)
+              {
+                
+
+                if(data)
+                {
+                  $('#image').val(data);
+                  $('#img_msg').show();
+                }
+                else
+                {
+                    alert("Error! ".data);
+                }
+
+              },
+              error: function() 
+              {
+              }           
+         });
+      }));
+
+
+    });
+
+});
+</script>

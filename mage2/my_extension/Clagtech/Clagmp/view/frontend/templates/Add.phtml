@@ -1,0 +1,152 @@
+
+<?php
+ $collection = $this->getCollection();  //var_dump($collection->getData());
+?>
+
+<h1 class="clagtech_tab">Add Product</h1>
+
+<div class="clag_tab">
+
+      <form enctype="multipart/form-data" method="post" action="" id="uploadForm">
+      
+      <input type="file" class="form-control" placeholder="Enter Title" accept="image/*" onchange="loadFile(event)" name="file" id="file"><br><br>
+      <button>Upload</button><br><br>
+
+
+      <h3 id="imageloag" style="display: none;">Loding..</h3>
+
+      <span id="img_msg" style="display: none;color: #fff;
+      background-color: #4f6d4f;
+      border-radius: 3px;
+      padding: 5px;">Image upload successfully</span><br><br>
+
+
+      <img id="output" style="width:100px;border: 2px solid gray;padding: 13px;"/><br><br>
+
+      </form>
+
+      <form enctype="multipart/form-data" method="post" action="<?php echo $block->getUrl('clagmp/index/adddata');?>" id="uploadFormpppp">
+
+      <input type="hidden" name="customer_id" value="<?php echo  $this->getCustomerId();?>">
+
+      <input type="hidden" name="image" id="image" value="">
+
+      Title <br><input type="text" name="title" placeholder="title"> <br><br>
+
+      Undertitle <br><input type="text" name="undertitle" placeholder="undertitle"> <br><br>
+
+      Dedcription <br><input type="text" name="description" placeholder="description"> <br><br>
+
+      Price <br><input type="text" name="price" placeholder="price"> <br><br>
+
+      Qty <br>
+      <select name="qty">
+        <option>--sellect--</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+        <option>6</option>
+        <option>7</option>
+        <option>8</option>
+        <option>9</option>
+        <option>10</option>
+      </select>
+
+      <br><br>
+
+      <button>Submit</button>
+    
+      </form>
+
+</div>
+
+
+ <script>
+  var loadFile = function(event) {
+
+    var output = document.getElementById('output');
+    output.src = URL.createObjectURL(event.target.files[0]);
+
+    var img = document.getElementById('img');
+    img.value= URL.createObjectURL(event.target.files[0]);
+    
+  };
+</script>
+
+ <style type="text/css">
+  .clagtech_tab{
+    background-color: #526552;
+    color: #fff;
+    padding: 6px;
+    border-radius: 5px;
+    margin-top: 14px;
+    margin-bottom: 18px;
+  }
+
+  .clag_tab{
+    background-color: #f6f6f6;
+    margin-left: 11px;
+    margin-right: 11px;
+    padding: 16px;
+  }
+
+  .clag_tab ul{
+    list-style-type:none;
+  }
+  </style>
+
+
+  <script type="text/javascript">
+  require(['jquery'],function($){
+
+    $(document).ready(function(){ 
+
+      /*$("#file").change(function(){ alert("change");
+
+        $("#uploadForm").submit();
+
+      });*/
+
+       
+      $("#uploadForm").on('submit',(function(e) { 
+        e.preventDefault();
+        $.ajax({
+              url: "<?php echo $block->getUrl('clagmp/index/Uploadfile');?>",
+              type: "POST",
+              data:  new FormData(this),
+              contentType: false,
+              processData:false,
+              beforeSend: function(){
+                $('#imageloag').show();
+              },
+              complete: function(){
+                  $('#imageloag').hide(); 
+              },
+              success: function(data)
+              {
+                
+
+                if(data)
+                {
+                  $('#image').val(data);
+                  $('#img_msg').show();
+                }
+                else
+                {
+                    alert("Error! ".data);
+                }
+
+              },
+              error: function() 
+              {
+              }           
+         });
+      }));
+
+
+    });
+
+});
+</script>

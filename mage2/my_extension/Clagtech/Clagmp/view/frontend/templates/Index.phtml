@@ -1,0 +1,217 @@
+
+<?php
+$collection = $this->getCollection();  //var_dump($collection->getData());
+?>
+<h1 class="clagtech_tab"><?php echo $this->getHelloWorldTxt();?></h1>
+
+<?php //echo __('Product Information');?>
+
+<?php 
+
+echo __('Home'); echo "<br><br>";
+
+?>
+
+
+<script type="text/javascript">
+  require(['jquery'],function($){
+  $(document).ready(function(){   alert("kk");
+
+      
+  });
+});
+</script>
+
+
+<div style="width: 100%; background-color: pink;">
+
+
+  <div style="width: 20%;float: left;">
+ 
+
+     <div class="clag_tab">
+      <ul>
+        <li>
+        <a href="<?php echo $block->getUrl('clagmp/index/add');?>">Add+</a>
+        </li>
+
+        <li>
+       <a href="<?php echo $block->getUrl('clagmp/index/index').'?post_type=all';?>">All</a>
+        </li>
+
+        <li>
+        <a href="<?php echo $block->getUrl('clagmp/index/index').'?post_type=pending';?>">Pending</a></li>
+
+        <li>
+        <a href="<?php echo $block->getUrl('clagmp/index/index').'?post_type=approved';?>">Approved</a></li>
+
+        <li>
+        <a href="<?php echo $block->getUrl('clagmp/index/index').'?post_type=archive';?>">Archive</a></li>
+      </ul>
+    </div>
+
+  
+  </div>
+
+  <div style="width: 80%;float: right;">
+
+
+  <div class="clag_tab">
+
+  <?php if (count($collection) == 0) { ?>
+
+  <p id="notmatch">Sorry! There are no matching product</p>
+
+
+  <?php } else { ?>
+
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Product id</th>
+        <th>Title</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Created Date</th>
+        <th colspan="3">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <?php foreach ($collection as $data) {  $ids = $data['id'];?>
+
+      <?php
+      $obj = \Magento\Framework\App\ObjectManager::getInstance(); 
+      $product = $obj->create('Magento\Catalog\Model\Product');
+      $product->load($data['product_id']);
+
+      $store = $obj->get('Magento\Store\Model\StoreManagerInterface')->getStore();
+      $imageUrl = $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $product->getImage();
+
+
+      ?>
+
+      <tr>
+        <td><img src="<?php echo $imageUrl;?>" style="width: 100px;"></td>
+        <td><?php echo $data['product_id'];?></td>
+        <td><?php echo $data['title'];?></td>
+        <td><?php echo $data['qty'];?></td>
+         <td><?php echo $data['price'];?></td>
+        <td>
+        <?php 
+        if ($data['trash'] == 1) 
+        {
+          echo '<span id="archive" class="statuswidth">Archive</span>';
+        } 
+        else 
+        {
+          if ($data['status'] == 1) 
+          {
+            echo '<span id="approved" class="statuswidth">Approved</span>';
+          } 
+          else 
+          {
+           echo '<span id="pending" class="statuswidth">Pending..</span>';
+          }
+        }
+        ?>
+        </td>
+
+        <td><?php echo $data['created_at'];?></td>
+
+
+
+        <!--restore-->
+        <?php if ($this->getAdvertiseType() == "archive") { ?>
+
+         <td>
+        <a href="<?php echo $block->getUrl('clagmp/index/restoredata').'?id='.$ids;?>">Restore</a>
+        </td>
+           
+        <?php } else { ?>
+
+        <td><a href="<?php echo $block->getUrl('clagmp/index/edit').'?id='.$ids;?>">Edit</a></td>
+
+        <td>
+        <a href="<?php echo $block->getUrl('clagmp/index/deletedata').'?id='.$ids;?>">Delete</a>
+        </td>
+
+        <td><a href="<?php echo $product->getProductUrl();?>" target="_blank">View</a></td>
+          
+        <?php } ?>
+        <!--restore-->
+
+      </tr>
+
+      <?php } ?>
+
+    </tbody>
+  </table>
+
+
+  <?php } ?>
+  </div>
+
+  
+  </div>
+
+</div>
+
+
+ <style type="text/css">
+  .clagtech_tab{
+    background-color: #526552;
+    color: #fff;
+    padding: 6px;
+    border-radius: 5px;
+    margin-top: 14px;
+    margin-bottom: 18px;
+    font-size: 27px;
+  }
+
+  .clag_tab{
+    background-color: #f6f6f6;
+    margin-left: 11px;
+    margin-right: 11px;
+    padding: 16px;
+  }
+
+  .clag_tab ul{
+    list-style-type:none;
+  }
+
+  #archive{
+    background-color: rgba(224, 43, 39, 0.78);
+    border-radius: 3px;
+    padding-left: 21px;
+    padding-right: 21px;
+    color: #fff;
+  }
+  #pending{
+    background-color: rgba(255, 85, 1, 0.78);
+    border-radius: 3px;
+    color: #fff;
+  }
+  #approved{
+    background-color: #547054;
+    border-radius: 3px;
+    color: #fff;
+  }
+  .statuswidth{
+    padding: 5px;
+    padding-left: 13px;
+    padding-right: 13px;
+  } 
+
+  #notmatch{
+    background-color: rgba(224, 43, 39, 0.8);
+    color: #fff;
+    padding: 25px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 18px;
+  }
+  </style>
