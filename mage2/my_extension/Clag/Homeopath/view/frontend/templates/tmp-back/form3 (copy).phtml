@@ -1,0 +1,395 @@
+<?php
+$attrCode = $this->getData('attrCode');
+$attrId = $this->getData('attrId');
+$attrSetId = $this->getData('attrSetId');
+$url = $this->getData('url');
+
+
+if (!empty($attrCode) && !empty($attrId) && !empty($attrSetId)) 
+{
+	//echo "Not Empty";
+	$attributeCodeArray = explode(',', $attrCode); //attributeCodes
+	$attributeIdsArray = explode(',', $attrId); //attributeIds
+	$attributeSetId = $attrSetId; //attributeSetId
+	$redirectUrl = $url; //redirectUrl
+
+	echo "<pre>";
+	print_r($attributeCodeArray);
+	print_r($attributeIdsArray);
+	echo $attributeSetId; 
+	echo "<br>";
+	echo $redirectUrl;
+	echo "</pre>";
+} 
+else {
+	//echo "Empty";
+	$attributeCodeArray = array('phytotherapy_form'); //attributeCodes
+	$attributeIdsArray = array(166); //attributeIds
+	$attributeSetId = 13; //attributeSet
+	$redirectUrl = 'dev-test'; //redirectUrl
+
+	echo "<pre>";
+	print_r($attributeCodeArray);
+	print_r($attributeIdsArray);
+	echo $attributeSetId; 
+	echo "<br>";
+	echo $redirectUrl;
+	echo "</pre>";
+}
+
+//call block
+/*
+{{block class="Clag\Homeopath\Block\Form3" 
+name="form1" 
+attrCode ="phytotherapy_form" 
+attrId="166" 
+attrSetId="13"
+redirectUrl="" 
+template="Clag_Homeopath::form3.phtml"}}
+*/
+?>
+<div>
+	<form id="form3" method="post" action="<?php echo $block->getUrl('homeopath/form3/cart');?>">
+		<input type="hidden" name="homeopaths_form" value="<?php echo $attributeIdsArray[0]?>">
+		<input type="hidden" name="attributeSetId" id="form3_attributeSetId" value="<?php echo $attributeSetId;?>">
+		<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl;?>">
+	<fieldset class="fieldset">
+		<div class="field name required">
+			<div class="control">
+
+               	<input type="hidden" name="productId" id="form3_productId">
+               	<input type="hidden" name="related_product" id="form3_related_product" value="">
+                <input type="hidden" name="selected_configurable_option" id="form3_selected_configurable_option">
+
+				<input type="text" class="form-control" id="form3_keyword" placeholder="name" autocomplete="off" spellcheck="false">
+
+				<a href="javascript:void(0)" class="form3_add-combination-selection-list"><?php echo __('add');?></a>
+
+				<div id='form3_custocart_ajax_loader' style="display: none;"><?php echo __('Searching..');?></div>
+				<ul id="form3_content"></ul>
+
+
+				<hr>
+				
+				<div class="custom-post-data" id="form3_custom-post-data">
+				</div>
+
+
+			</div>
+		</div>
+
+        <div class="field name required">
+            <div class="control">
+                <select name="form" id="form3_form">
+				<option value=""><?php echo __('Choose an Form');?>...</option>
+				</select>		
+            </div>
+        </div>
+        <div class="field name required">
+            <div class="control">
+                <select required="true" name="qty_num" class="required-entry" id="form3_qty_num">
+					<option value=""><?php echo __('Select qty');?></option>
+				</select>	
+            </div>
+        </div>
+	</fieldset>
+
+
+	<div class="field">
+		<label class="label" for="price">
+			<span id="form3_product_price"></span>
+			<div id='form3_cusprice_ajax_loader' style="display: none;"><?php echo __('Searching');?>..</div>
+		</label>
+	</div>
+
+
+	<div class="actions-toolbar">
+	    <div class="primary">
+            <button type="submit" title="Submit" class="action submit primary">
+                <span><?php echo __('Add to cart');?></span>
+            </button>
+            
+       	</div>
+    </div>
+</form>
+
+<script type="text/javascript">
+  require(['jquery'],function($){
+
+
+  	$(document).ready(function() {
+
+
+  		var txt_msg1 = '<?php echo __("Please select the at least one product for add to cart");?>';
+
+  		var txt_msg2 = '<?php echo __("Invalid selection please select the all fields ");?>';
+
+  		var txt_msg3 = '<?php echo __("Not Found any matches");?>';
+
+  		var txt_form = '<?php echo __("Choose an Form");?>';
+
+
+  		//add-combination-selection-list
+  		$(document).on('click', '.form3_add-combination-selection-list', function(){
+
+  			var productId = "";
+  			var form = "";
+  			var qty = "";
+  			var name = "";
+  			var selected_configurable_option = "";
+  			var related_product = "";
+
+  			if ($('#form3_productId').val()) {
+  				productId = $('#form3_productId').val(); 
+  				selected_configurable_option = $('#form3_selected_configurable_option').val(); 
+  				related_product = $('#form3_related_product').val(); 
+  				name = $('#form3_keyword').val();
+  				//alert(productId);
+  			}
+
+
+  			if ($('#form3_form').find(":selected").val()) {
+  				form = $('#form3_form').find(":selected").val();
+  				//alert(form);
+  			}
+
+  			if ($('#form3_qty_num').val()) {
+  				qty = $('#form3_qty_num').find(":selected").val();
+  				//alert(qty);
+  			}
+
+  			if (productId && form && qty) 
+  			{
+
+				//append input fields
+	  			var len = $( ".form3-field-group" ).length;
+
+	  			//alert("len :: "+len);
+
+				var input = '<div class= "form3-field-group" id="form3_group_'+len+'">'+
+				'<label>'+name+'</label>  '+
+				'<input type="hidden" name="arr[productId][]" value="'+productId+'">'+
+				'<input type="hidden" name="arr[form][]" value="'+form+'">'+
+				'<input type="hidden" name="arr[qty_num][]" value="'+qty+'">'+
+				'<input type="hidden" name="arr[related_product][]" value="'+related_product+'">'+
+				'<input type="hidden" name="arr[selected_configurable_option][]" value="'+selected_configurable_option+'">'+
+				'<a href="javascript://" class="rem-in" data-id="'+len+'">'+
+				'<?php echo __('remove');?></a>'+
+				'</div>';
+
+				$(input).appendTo("#form3_custom-post-data");
+
+				$('#form3_keyword').val("");
+				
+  			}
+  			else
+  			{
+  				alert(txt_msg2);
+  			}
+  		});
+
+
+  		//Remove input fields
+  		$(document).on('click', '.rem-in', function(){
+  			var dataId = $(this).data('id');
+			$('#form3_group_'+dataId).remove();
+  		});
+
+
+  		/*
+  		* Start::Search Products
+  		*/
+  		$('#form3_keyword').on('input', function() {
+			var searchKeyword = $(this).val();
+			var attributeSetId = $('#form3_attributeSetId').val(); 
+			if (searchKeyword.length >= 3) { 
+
+				/*Ajax Start*/
+				$.ajax({
+					url: '<?php echo $block->getUrl('homeopath/form3/search');?>',
+					type: "POST",
+					data: {keywords: searchKeyword, attributeSetId: attributeSetId},
+					cache: false,
+					dataType: 'json',
+					beforeSend: function(){
+					    $('#form3_custocart_ajax_loader').show();
+					},
+					complete: function(){
+					    $('#form3_custocart_ajax_loader').hide();
+					},
+					success: function (data) {  //console.log(data);
+
+						if (data['result']!=0) 
+						{
+							$('ul#form3_content').empty()
+							$.each(data, function() { 	 	
+								$('ul#form3_content').append('<li class="form3_emptyli"><a class="form3_pname" href="JavaScript://" id="'+this.product_id+'">'+this.name+'</a></li>');
+							});
+						}
+						else
+						{
+							$('ul#form3_content').empty()
+							$.each(data, function() { 	 
+								$('ul#form3_content').append('<li class="form3_emptyli">'+txt_msg3+'</li>');
+							});
+						}
+
+					}
+
+				});
+				/*Ajax End*/
+
+			}
+		});
+
+
+		$(document).on('click', '.form3_pname',function(){
+			var target = $(this);
+
+			var pname = target.text();
+			var pid = target.attr('id');
+
+			$('#form3_keyword').val(pname);
+			$('#form3_productId').val(pid);
+
+			$('.form3_emptyli').remove();
+			
+
+			//Set enhancement and form
+			var productId = pid;
+			var form = '<?php echo $attributeCodeArray[0]?>';
+			$(this).form3_Getconfigoptions(productId,form);
+		});
+
+  		/*
+  		* End::Search Products
+  		*/
+
+
+
+  		/*
+  		* Start::Get configurable Product options
+  		*/
+		$.fn.form3_Getconfigoptions = function(productId, form){  
+
+				/*Ajax Start*/
+				$.ajax({
+					url: '<?php echo $block->getUrl('homeopath/form3/getconfigoptions');?>',
+					type: "POST",
+					data: {productId: productId, form:form},
+					cache: false,
+					dataType: 'json',
+					beforeSend: function(){
+						//$('#cusprice_ajax_loader').show();
+					},
+					complete: function(){
+						//$('#cusprice_ajax_loader').hide();
+					},
+					success: function (data) {  
+
+						//console.log(data);
+
+						if (data['result']!=0) 
+						{
+							$('#form3_form').html('<option value="">'+txt_form+'...</option>'+data['form']);
+						}
+						else
+						{	
+							$('#form3_form').html('<option value="">'+txt_form+'...</option>');
+						}
+					}
+
+				});
+				/*Ajax End*/
+
+
+		}
+		/*
+  		* End::Get configurable Product options
+  		*/
+
+
+
+	
+		/*
+  		* Start::Get configurable product price
+  		*/
+		var form = "";
+		var productId = "";
+
+		var attributeCodeForm = '<?php echo $attributeCodeArray[0]?>'; 
+ 
+		$('#form3_form').change(function(){ 
+			productId = $('#form3_productId').val();
+			product_name = $('#form3_keyword').val(); 
+			form = $(this).find('option:selected').text();
+			$(this).form3_getconfigurableProductPrice(productId, form, attributeCodeForm);
+		});
+		
+
+		$.fn.form3_getconfigurableProductPrice = function(productId, form, attributeCodeForm){
+
+
+			if (form) {
+
+				/*Ajax Start*/
+				$.ajax({
+					url: '<?php echo $block->getUrl('homeopath/form3/getprice');?>',
+					type: "POST",
+					data: {productId: productId, form: form, attributeCodeForm:attributeCodeForm},
+					cache: false,
+					dataType: 'json',
+					beforeSend: function(){
+						$('#form3_cusprice_ajax_loader').show();
+					},
+					complete: function(){
+						$('#form3_cusprice_ajax_loader').hide();
+					},
+					success: function (data) {  console.log(data);
+
+						/**/
+						$('#form3_product_price').text('<?php echo $this->getCurrentCurrencySymbol();?>'+data['price']);
+
+						$('#form3_selected_configurable_option').val(data['selected_configurable_option']);
+
+						var option_fields = '<option value=""><?php echo __('Select qty');?></option>';
+						for (var i = 1; i <= data['qty']; i++) {
+
+							var option_fields = option_fields + '<option value="'+i+'">'+i+'</option>';
+
+							$('#form3_qty_num').html(option_fields);
+						}
+
+						//console.log(option_fields);
+						/**/
+					}
+
+				});
+				/*Ajax End*/
+			}
+		}
+		/*
+  		* End::Get configurable product price
+  		*/
+
+
+  		$('#form3').submit(function(){ 
+
+  			var form3_fieldgroup = $('.form3-field-group').length;
+
+  			if (form3_fieldgroup) 
+  			{
+  				return true;
+  			}
+  			else
+  			{
+  				alert(txt_msg1);
+  				return false;
+  			}
+  		});
+
+
+	});
+  });
+</script>
+</div>

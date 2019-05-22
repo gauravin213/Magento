@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="clag" translate="label" sortOrder="10">
+            <label>Clag</label>
+        </tab>
+        <section id="homeopath" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Hello World</label>
+            <tab>clag</tab>
+            <resource>Clag_Homeopath::Homeopath_config</resource>
+            <group id="general" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Configuration</label>
+                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Module Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+
+             <group id="form1_configuration" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Form 1 </label>
+                <field id="attrCode" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>AttrCode</label>
+                    <comment>This text will display on the frontend.</comment>
+                </field>
+                <field id="attrid" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>AttrId</label>
+                    <comment>This text will display on the frontend.</comment>
+                </field>
+                <field id="url" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>After addtocart redirect url</label>
+                    <comment>This text will display on the frontend.</comment>
+                </field>
+            </group>
+
+            <group id="form2_configuration" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Form 2 </label>
+                <field id="attrCode" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>AttrCode</label>
+                    <comment>This text will display on the frontend.</comment>
+                </field>
+                <field id="attrid" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>AttrId</label>
+                    <comment>This text will display on the frontend.</comment>
+                </field>
+                <field id="url" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>After addtocart redirect url</label>
+                    <comment>This text will display on the frontend.</comment>
+                </field>
+            </group>
+
+
+            <group id="form3_configuration" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Form 3 </label>
+                <field id="attrCode" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>AttrCode</label>
+                    <comment>This text will display on the frontend.</comment>
+                </field>
+                <field id="attrid" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>AttrId</label>
+                    <comment>This text will display on the frontend.</comment>
+                </field>
+                <field id="url" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>After addtocart redirect url</label>
+                    <comment>This text will display on the frontend.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

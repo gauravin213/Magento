@@ -1,0 +1,314 @@
+<?php
+$attrCode = $this->getData('attrCode');
+$attrId = $this->getData('attrId');
+$attrSetId = $this->getData('attrSetId');
+$url = $this->getData('url');
+
+
+if (!empty($attrCode) && !empty($attrId) && !empty($attrSetId)) 
+{
+	//echo "Not Empty";
+	$attributeCodeArray = explode(',', $attrCode); //attributeCodes
+	$attributeIdsArray = explode(',', $attrId); //attributeIds
+	$attributeSetId = $attrSetId; //attributeSetId
+	$redirectUrl = $url; //redirectUrl
+
+	echo "<pre>";
+	print_r($attributeCodeArray);
+	print_r($attributeIdsArray);
+	echo $attributeSetId; 
+	echo "<br>";
+	echo $redirectUrl;
+	echo "</pre>";
+} 
+else {
+	//echo "Empty";
+	$attributeCodeArray = array('homeopaths_enhancement', 'homeopaths_form'); //attributeCodes
+	$attributeIdsArray = array(160, 161); //attributeIds
+	$attributeSetId = 11; //attributeSetId
+	$redirectUrl = 'dev-test'; //redirectUrl
+
+	echo "<pre>";
+	print_r($attributeCodeArray);
+	print_r($attributeIdsArray);
+	echo $attributeSetId;
+	echo "<br>";
+	echo $redirectUrl;
+	echo "</pre>";
+}
+
+/*
+{{block class="Clag\Homeopath\Block\Form1" 
+name="form1" 
+attrCode ="homeopaths_enhancement,homeopaths_form" 
+attrId="160,161" 
+attrSetId="11" 
+url="dev-test" 
+template="Clag_Homeopath::form1.phtml"}}
+*/
+?>
+<div>
+	<form id="form1" method="post" action="<?php echo $block->getUrl('homeopath/form1/Cart');?>">
+		<input type="hidden" name="homeopaths_enhancement" value="<?php echo $attributeIdsArray[0];?>">
+		<input type="hidden" name="homeopaths_form" value="<?php echo $attributeIdsArray[1]?>">
+		<input type="hidden" name="attributeSetId" id="form1_attributeSetId" value="<?php echo $attributeSetId;?>">
+		<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl;?>">
+	<fieldset class="fieldset">
+		<div class="field name required">
+			<div class="control">
+                <input type="hidden" name="productId" id="productId">
+                <input type="hidden" name="related_product" id="related_product" value="">
+                <input type="hidden" name="selected_configurable_option" id="selected_configurable_option">
+
+				<input required="true" type="text" class="form-control" id="keyword" placeholder="name" autocomplete="off" spellcheck="false">
+				<div id='custocart_ajax_loader' style="display: none;"><?php echo __('Searching');?>..</div>
+				<ul id="content"></ul>
+			</div>
+		</div>
+	    
+	    <div class="field name required">
+			<div class="control">
+				<select name="enhancement" id="enhancement">
+				<option value=""><?php echo __('Choose an Enhancement');?>...</option>
+				</select>	
+			</div>
+		</div>
+        <div class="field name required">
+            <div class="control">
+                <select name="form" id="form">
+				<option value=""><?php echo __('Choose an Form');?>...</option>
+				</select>		
+            </div>
+        </div>
+        <div class="field name required">
+            <div class="control">
+                <select required="true" name="qty_num" class="required-entry" id="qty_num">
+					<option value=""><?php echo __('Select qty');?></option>
+				</select>	
+            </div>
+        </div>
+	</fieldset>
+
+
+	<div class="field">
+			<label class="label" for="price">
+				<span id="product_price"></span>
+				<div id='cusprice_ajax_loader' style="display: none;"><?php echo __('Searching');?>..</div>
+			</label>
+	</div>
+
+
+	<div class="actions-toolbar">
+	    <div class="primary">
+            <button type="submit" title="Submit" class="action submit primary">
+                <span><?php echo __('Add to cart');?></span>
+            </button>
+       	</div>
+    </div>
+</form>
+
+<script type="text/javascript">
+  require(['jquery'],function($){
+
+
+  	$(document).ready(function() {
+
+  		var txt_msg3 = '<?php echo __("Not Found any matches");?>';
+
+  		var txt_enhancement = '<?php echo __("Choose an Enhancement");?>';
+
+  		var txt_form = '<?php echo __("Choose an Form");?>';
+
+  		/*
+  		* Start::Search Products
+  		*/
+  		$('#keyword').on('input', function() {
+			var searchKeyword = $(this).val();
+			var attributeSetId = $('#form1_attributeSetId').val(); 
+			if (searchKeyword.length >= 3) { 
+
+				/*Ajax Start*/
+				$.ajax({
+					url: '<?php echo $block->getUrl('homeopath/form1/search');?>',
+					type: "POST",
+					data: {keywords: searchKeyword, attributeSetId: attributeSetId},
+					cache: false,
+					dataType: 'json',
+					beforeSend: function(){
+					    $('#custocart_ajax_loader').show();
+					},
+					complete: function(){
+					    $('#custocart_ajax_loader').hide();
+					},
+					success: function (data) {  //console.log(data);
+
+						if (data['result']!=0) 
+						{
+							$('ul#content').empty()
+							$.each(data, function() { 	 	
+								$('ul#content').append('<li class="emptyli"><a class="pname" href="JavaScript://" id="'+this.product_id+'">'+this.name+'</a></li>');
+							});
+						}
+						else
+						{
+							$('ul#content').empty()
+							$.each(data, function() { 	 
+								$('ul#content').append('<li class="emptyli">'+txt_msg3+'</li>');
+							});
+						}
+
+					}
+
+				});
+				/*Ajax End*/
+
+			}
+		});
+
+
+		$(document).on('click', '.pname',function(){
+			var target = $(this);
+
+			var pname = target.text();
+			var pid = target.attr('id');
+
+			$('#keyword').val(pname);
+			$('#productId').val(pid);
+
+			$('.emptyli').remove();
+			
+
+			//Set enhancement and form
+			var productId = pid;
+			var enhancement = '<?php echo $attributeCodeArray[0]?>';
+			var form = '<?php echo $attributeCodeArray[1]?>';
+			$(this).Getconfigoptions(productId, enhancement, form);
+
+		});
+
+  		/*
+  		* End::Search Products
+  		*/
+
+
+
+  		/*
+  		* Start::Get configurable Product options
+  		*/
+		$.fn.Getconfigoptions = function(productId, enhancement, form){  
+
+				/*Ajax Start*/
+				$.ajax({
+					url: '<?php echo $block->getUrl('homeopath/form1/getconfigoptions');?>',
+					type: "POST",
+					data: {productId: productId, enhancement: enhancement, form:form},
+					cache: false,
+					dataType: 'json',
+					beforeSend: function(){
+						//$('#cusprice_ajax_loader').show();
+					},
+					complete: function(){
+						//$('#cusprice_ajax_loader').hide();
+					},
+					success: function (data) {  
+
+						//console.log(data);
+
+						if (data['result']!=0) 
+						{
+							$('#enhancement').html('<option value="">'+txt_enhancement+'...</option>'+data['enhancement']);
+							$('#form').html('<option value="">'+txt_form+'...</option>'+data['form']);
+						}
+						else
+						{	
+							$('#enhancement').html('<option value="">'+txt_enhancement+'...</option>');
+							$('#form').html('<option value="">'+txt_form+'...</option>');
+						}
+					}
+
+				});
+				/*Ajax End*/
+
+
+		}
+		/*
+  		* End::Get configurable Product options
+  		*/
+
+
+
+	
+		/*
+  		* Start::Get configurable product price
+  		*/
+		var enhancement = "";
+		var form = "";
+		var productId = "";
+
+		var attributeCodeEnhancement = '<?php echo $attributeCodeArray[0]?>';
+		var attributeCodeForm = '<?php echo $attributeCodeArray[1]?>'; 
+ 
+		$('#enhancement').change(function(){ 
+			productId = $('#productId').val();
+			product_name = $('#keyword').val(); 
+			enhancement = $(this).find('option:selected').text();
+			$(this).getconfigurableProductPrice(productId, enhancement, form, attributeCodeEnhancement, attributeCodeForm);
+		});
+
+		$('#form').change(function(){ 
+			form = $(this).find('option:selected').text();
+			$(this).getconfigurableProductPrice(productId, enhancement, form, attributeCodeEnhancement, attributeCodeForm);
+		});
+		
+
+		$.fn.getconfigurableProductPrice = function(productId, enhancement, form, attributeCodeEnhancement, attributeCodeForm){
+
+
+			if (enhancement && form) {
+
+				/*Ajax Start*/
+				$.ajax({
+					url: '<?php echo $block->getUrl('homeopath/form1/getprice');?>',
+					type: "POST",
+					data: {productId: productId, enhancement: enhancement, form: form, attributeCodeEnhancement: attributeCodeEnhancement, attributeCodeForm:attributeCodeForm},
+					cache: false,
+					dataType: 'json',
+					beforeSend: function(){
+						$('#cusprice_ajax_loader').show();
+					},
+					complete: function(){
+						$('#cusprice_ajax_loader').hide();
+					},
+					success: function (data) {  console.log(data);
+
+						/**/
+						$('#product_price').text('<?php echo $this->getCurrentCurrencySymbol();?>'+data['price']);
+
+						$('#selected_configurable_option').val(data['selected_configurable_option']);
+
+
+						var option_fields = '<option value=""><?php echo __('Select qty');?></option>';
+						for (var i = 1; i <= data['qty']; i++) {
+
+							var option_fields = option_fields + '<option value="'+i+'">'+i+'</option>';
+
+							$('#qty_num').html(option_fields);
+						}
+
+						//console.log(option_fields);
+						/**/
+						
+					}
+
+				});
+				/*Ajax End*/
+			}
+		}
+
+		/*
+  		* End::Get configurable product price
+  		*/
+	});
+  });
+</script>
+</div>
