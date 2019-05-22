@@ -1,0 +1,101 @@
+
+-Module creator
+https://amasty.com/magento-2-module-creator.html#success
+
+-User guid link :
+http://docs.magento.com/m2/ce/user_guide/Resources/pdf/Magento_Community_Edition_2.1_User_Guide.pdf
+http://info2.magento.com/rs/magentosoftware/images/magento-extension-developers-guide-v1.0.pdf
+
+-All commands
+http://www.emiprotechnologies.com/technical_notes/magento-technical-notes-60/post/magento-2-useful-commands-list-391
+
+
+
+-SSH
+ssh avgerinospharmac@avgerinospharmacy.gr -p 7822
+pwd 
+cd public_html
+cd sandbox
+cd bin
+
+
+-CLI
+cd /var/www/html/magento221/bin 
+
+php magento
+php magento setup:upgrade
+php magento cache:clean
+php magento cache:flush
+php magento cache:disable
+php magento indexer:reindex  OR  php magento indexer:reindex customer_grid
+
+
+php magento module:enable NameSpace_ModuleName
+php magento module:disable NameSpace_ModuleName
+
+
+php magento setup:static-content:deploy -f
+OR
+php magento setup:static-content:deploy en_US el_GR fr_FR  de_DE
+
+
+php magento deploy:mode:show
+php magento deploy:mode:set developer/production 
+php magento deploy:mode:set default
+php magento deploy:mode:set developer
+php magento deploy:mode:set production
+
+php magento setup:di:compile
+
+php magento module:uninstall -r Gaurav2_Sharma2
+
+
+php bin/magento cron:run
+
+crontab -l
+
+
+
+
+-Install magento 2 via composer
+
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition /var/www/html/magento2
+
+public key : 16c6e8e44ca2746185d15a6a234ea60c
+private key: e534d3af139530a217b6c1bcade60d4f
+
+
+
+-Tables backup restore
+
+core_config_data 
+
+admin_user
+
+setup_module
+
+
+-Magento 2.0 setup
+
+sudo apt-get update
+
+sudo apt-get install php7.0-gd php7.0-mcrypt php7.0-curl php7.0-intl php7.0-xsl php7.0-mbstring php7.0-openssl php7.0-zip php7.0-soap
+
+sudo service apache2 restart
+
+
+-After install Admin 404 and front messy there is the SymLinks issue
+
+sudo gedit /etc/apache2/apache2.conf
+
+<Directory /var/www/>
+Options Indexes FollowSymLinks
+AllowOverride none
+Require all granted
+
+To
+
+<Directory /var/www/>
+Options Indexes FollowSymLinks
+AllowOverride All
+Require all granted
