@@ -1,3 +1,9 @@
+Check Magento Version:
+https://www.mageplaza.com/check-magento-version/#analyze
+
+
+php bin/magento --version
+
 
 -Module creator
 https://amasty.com/magento-2-module-creator.html#success
@@ -20,7 +26,9 @@ cd bin
 
 
 -CLI
-cd /var/www/html/magento221/bin 
+cd /var/www/html/sandbox/bin 
+
+sudo chmod -R 777 /var/www/html/sandbox/
 
 php magento
 php magento setup:upgrade
@@ -30,8 +38,12 @@ php magento cache:disable
 php magento indexer:reindex  OR  php magento indexer:reindex customer_grid
 
 
+
+magento indexer:reindex algolia_pages
+
+
 php magento module:enable NameSpace_ModuleName
-php magento module:disable NameSpace_ModuleName
+php magento module:disable Mageplaza_GoogleRecaptcha
 
 
 php magento setup:static-content:deploy -f
@@ -99,3 +111,93 @@ To
 Options Indexes FollowSymLinks
 AllowOverride All
 Require all granted
+</Directory>
+
+<Directory /var/www/>
+	Options Indexes FollowSymLinks MultiViews
+	AllowOverride All
+	Order allow,deny
+	Allow from all
+</Directory>
+
+
+
+
+
+
+
+/*
+*  Add custom ui component on checkout page
+*/
+-ui component or knockout view model
+magento_root/app/code/Potkoc/Api/view/frontend/web/js/view/testcompone
+
+-Denine custom template for our ui component
+magento_roo/app/code/Potkoc/Api/view/frontend/web/template/testcompon
+
+
+
+
+Update Magento 2:
+
+HOW TO UPGRADE MAGENTO 2 to Latest version ?
+
+Step 1 :
+Login to your server via SSH!
+Go to Magento root directory.
+
+Step 2:
+Take backup of your database and files.
+
+Step 3:
+Download the latest package in your magento root directory.
+And Extract it
+
+Reset the file permission:
+find . -type f -exec chmod 644 {} \;     
+find . -type d -exec chmod 755 {} \;   
+find ./var -type d -exec chmod 777 {} \;    
+find ./pub/media -type d -exec chmod 777 {} \;
+find ./pub/static -type d -exec chmod 777 {} \;
+chmod 777 ./app/etc
+chmod 644 ./app/etc/*.xml
+chmod u+x bin/magento
+
+Clear cache and run upgrade , deploy command:
+php -f bin/magento cache:clean
+php -f bin/magento cache:flush
+php -f bin/magento setup:upgrade
+php -f bin/magento setup:static-content:deploy
+
+Login to your backend.
+
+Test your front-end functionality.
+
+
+Download Latest version package:
+http://pubfiles.nexcess.net/magento/ce-packages
+wget http://pubfiles.nexcess.net/magento/ce-packages/magento2-2.3.0.tar.gz
+
+
+wget http://pubfiles.nexcess.net/magento/ce-packages/magento2-with-samples-2.3.0.tar.gz
+
+https://support.hypernode.com/knowledgebase/updating-magento-2/
+
+
+Method 2:
+https://support.cloudways.com/how-to-upgrade-magento-2-via-cli/
+
+
+composer require magento/product-community-edition 2.x.x --no-update
+OR
+composer require magento/product-community-edition 2.2.0 --no-update
+
+composer update
+
+rm -rf var/di/* var/generation/* var/cache/* var/log/* var/page_cache/* var/session/* var/view_preprocessed/* pub/static/*
+php bin/magento setup:upgrade
+php bin/magento setup:di:compile
+php bin/magento setup:static-content:deploy
+php bin/magento cache:clean
+php bin/magento cache:flush
+php bin/magento indexer:reindex
