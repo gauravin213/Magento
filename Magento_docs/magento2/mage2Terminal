@@ -38,12 +38,35 @@ php magento cache:disable
 php magento indexer:reindex  OR  php magento indexer:reindex customer_grid
 
 
+Enabled css js minification on production mode
+php bin/magento config:set dev/js/enable_js_bundling 1
+php bin/magento config:set dev/js/minify_files 1
+php bin/magento config:set dev/static/sign 1
+php bin/magento config:set dev/js/merge_files 0
+php bin/magento cache:clean config
+
+php bin/magento config:set dev/css/merge_css_files 1
+php bin/magento config:set dev/css/minify_files 1
+
+---
+
+php bin/magento config:set dev/js/enable_js_bundling 0 
+php bin/magento config:set dev/js/minify_files 0
+php bin/magento config:set dev/static/sign 0 
+php bin/magento config:set dev/js/merge_files 0 
+php bin/magento cache:clean config
+
+php bin/magento config:set dev/css/merge_css_files 0
+php bin/magento config:set dev/css/minify_files 0
+
+
+
 
 magento indexer:reindex algolia_pages
 
 
 php magento module:enable NameSpace_ModuleName
-php magento module:disable Mageplaza_GoogleRecaptcha
+php magento module:disable Inchoo_Helloworld
 
 
 php magento setup:static-content:deploy -f
@@ -55,7 +78,12 @@ php magento deploy:mode:show
 php magento deploy:mode:set developer/production 
 php magento deploy:mode:set default
 php magento deploy:mode:set developer
-php magento deploy:mode:set production
+php magento deploy:mode:set production [-s|--skip-compilation] 
+
+php magento deploy:mode:set production [-s|--skip-compilation]
+
+
+
 
 php magento setup:di:compile
 
@@ -81,6 +109,8 @@ private key: e534d3af139530a217b6c1bcade60d4f
 -Tables backup restore
 
 core_config_data 
+web/unsecure/base_url
+web/secure/base_url
 
 admin_user
 
@@ -201,3 +231,78 @@ php bin/magento setup:static-content:deploy
 php bin/magento cache:clean
 php bin/magento cache:flush
 php bin/magento indexer:reindex
+
+
+Magento 2.0 Speed Up:
+https://www.mageplaza.com/devdocs/speed-up-magento-2.html
+
+
+
+Issue After Installation:
+
+1. Mahento 2.3.4 black admin page
+C:\xampp\htdocs\magento234\vendor\magento\framework\View\Element\Template\File
+
+Replace path
+
+From:
+$realPath = $this->fileDriver->getRealPath($path);
+
+To:
+$realPath = str_replace('\\', '/', $this->fileDriver->getRealPath($path));
+
+
+method 2 on live server
+Delete var/cache folder
+Go to database SELECT * FROM core_config_data WHERE path = 'web/seo/use_rewrites' and make it 0
+Then enter url in your browser magento_base_url/index.php/your_admin_url
+
+http://127.0.0.1/magento234sam/index.php/admin
+
+https://wizardsports.com/sandbox/index.php/8awtnewszpzjewoq/
+
+
+
+
+2. Backend logo not loading
+
+Delete all folders under pub/static
+Delete var/cache
+Delete var/composer_home
+Delete var/generation
+Delete var/page_cache
+Delete var/view_preprocessed
+
+Run: php magento setup:static-content:deploy -f
+
+
+
+
+
+Enable path hint:
+
+I strongly discourage this method. Use it at your own risk. Only to be used on local system.
+
+Open vendor/magento/module-developer/Model/TemplateEngine/Plugin/DebugHints.php (tested in 2.3.2)
+
+write this code inside afterCreate function : (at the start, above the storecode line)
+
+if(isset($_GET['shreyasPathHints']) && $_GET['shreyasPathHints'] == 'on'){
+    return $this->debugHintsFactory->create([
+        'subject' => $invocationResult,
+        'showBlockHints' => 1,
+    ]);
+}
+
+?shreyasPathHints=on
+
+
+
+Banner 
+
+Timer
+
+Bing map 
+
+Custom layout chnages with dewsigner 
+
